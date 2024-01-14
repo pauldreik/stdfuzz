@@ -23,6 +23,7 @@ set(fuzzersrcfiles
     format/one-arg.cpp
     format/one-warg.cpp
     format/two-args.cpp
+    libstdcpp/unicode-utf-iterator.cpp
     regex/regex.cpp
     set_like/set_differential.cpp
 )

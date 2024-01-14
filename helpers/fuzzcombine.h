@@ -10,6 +10,7 @@
 #include <cstddef> //size_t
 #include <cstdint> //uint8_t
 #include <cstring> // memcpy
+#include <span>
 #include <string>
 #include <tuple>
 #include <vector>
@@ -76,6 +77,24 @@ struct FuzzCombiner
     return { beg, end };
   }
 
+  /// consumes as much as possible of the remainder as a specific type
+  template<typename Target>
+  std::vector<Target> get_remainder()
+  {
+    static_assert(std::is_trivially_constructible_v<Target>,
+                  "target must be bit blastable");
+    std::vector<Target> ret;
+    const auto nofelements = m_size / sizeof(Target);
+    if (nofelements != 0) {
+      const auto consumed_bytes = nofelements * sizeof(Target);
+      ret.resize(nofelements);
+      std::memcpy(ret.data(), m_data, consumed_bytes);
+      m_data += consumed_bytes;
+      m_size -= consumed_bytes;
+    }
+    return ret;
+  }
+
   std::string get_half_remainder_as_string()
   {
     auto beg = m_data;
@@ -83,6 +102,18 @@ struct FuzzCombiner
     m_data = end;
     m_size -= m_size / 2;
     return { beg, end };
+  }
+
+  template<typename Target>
+  std::span<const Target> get_remainder_as_span()
+  {
+    static_assert(sizeof(Target) == 1,
+                  "must be able to legally cast into target type");
+    const auto* ptr = reinterpret_cast<const Target*>(m_data);
+    std::span<const Target> ret{ ptr, ptr + m_size };
+    m_data += m_size;
+    m_size = 0;
+    return ret;
   }
 
   /**
