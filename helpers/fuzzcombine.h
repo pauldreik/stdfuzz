@@ -77,6 +77,24 @@ struct FuzzCombiner
     return { beg, end };
   }
 
+  /// consumes as much as possible of the remainder as a specific type
+  template<typename Target>
+  std::vector<Target> get_remainder()
+  {
+    static_assert(std::is_trivially_constructible_v<Target>,
+                  "target must be bit blastable");
+    std::vector<Target> ret;
+    const auto nofelements = m_size / sizeof(Target);
+    if (nofelements != 0) {
+      const auto consumed_bytes = nofelements * sizeof(Target);
+      ret.resize(nofelements);
+      std::memcpy(ret.data(), m_data, consumed_bytes);
+      m_data += consumed_bytes;
+      m_size -= consumed_bytes;
+    }
+    return ret;
+  }
+
   std::string get_half_remainder_as_string()
   {
     auto beg = m_data;
