@@ -10,6 +10,7 @@
 #include <cstddef> //size_t
 #include <cstdint> //uint8_t
 #include <cstring> // memcpy
+#include <span>
 #include <string>
 #include <tuple>
 #include <vector>
@@ -83,6 +84,18 @@ struct FuzzCombiner
     m_data = end;
     m_size -= m_size / 2;
     return { beg, end };
+  }
+
+  template<typename Target>
+  std::span<const Target> get_remainder_as_span()
+  {
+    static_assert(sizeof(Target) == 1,
+                  "must be able to legally cast into target type");
+    const auto* ptr = reinterpret_cast<const Target*>(m_data);
+    std::span<const Target> ret{ ptr, ptr + m_size };
+    m_data += m_size;
+    m_size = 0;
+    return ret;
   }
 
   /**
