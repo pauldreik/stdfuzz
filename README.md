@@ -25,5 +25,5 @@ Finds issues in all three major implementations.
 * https://gcc.gnu.org/bugzilla/show_bug.cgi?id=111102 illegal pointer arithmetic on ```std::format(L"{:65536}",1)```
 * https://gcc.gnu.org/bugzilla/show_bug.cgi?id=111162 signed integer overflow triggered by std::chrono::parse
 * https://gcc.gnu.org/bugzilla/show_bug.cgi?id=111163 signed integer overflow in ```std::format("{:%S}",std::chrono::duration....)```
-### libstdc++ (llvm)
+### libc++ (llvm)
 * https://github.com/llvm/llvm-project/issues/65011 out of bounds read outside the format string
