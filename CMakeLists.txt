@@ -23,13 +23,14 @@ set(fuzzersrcfiles
     format/one-arg.cpp
     format/one-warg.cpp
     format/two-args.cpp
+    libstdcpp/unicode-utf-iterator.cpp
     regex/regex.cpp
     set_like/set_differential.cpp
 )
 
 # assume using clang with a local gcc trunk (currently gcc 14) installation
 set(GCCDIR $ENV{HOME}/local/)
-set(GCCVERSION 14.0.1)
+set(GCCVERSION 15.0.0)
 
 foreach(fuzzersrcfile ${fuzzersrcfiles})
     string(REPLACE / - fuzzer ${fuzzersrcfile})
@@ -51,3 +52,8 @@ foreach(fuzzersrcfile ${fuzzersrcfiles})
     target_link_libraries(${fuzzer} PUBLIC ${GCCDIR}/lib64/libstdc++.a)
 endforeach()
 
+# the unicode utf iterator needs extra validation
+add_library(simdutf STATIC external/simdutf/simdutf.cpp)
+target_include_directories(simdutf PUBLIC external/simdutf/)
+
+target_link_libraries(libstdcpp-unicode-utf-iterator PRIVATE simdutf)
