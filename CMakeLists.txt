@@ -29,7 +29,7 @@ set(fuzzersrcfiles
 
 # assume using clang with a local gcc trunk (currently gcc 14) installation
 set(GCCDIR $ENV{HOME}/local/)
-set(GCCVERSION 14.0.1)
+set(GCCVERSION 15.0.0)
 
 foreach(fuzzersrcfile ${fuzzersrcfiles})
     string(REPLACE / - fuzzer ${fuzzersrcfile})
